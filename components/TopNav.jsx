@@ -1,15 +1,21 @@
-export default function TopNav({ isViewer }) {
+export default function TopNav({ isViewer, toggleViewer, toggleNav }) {
     return (
         <>
             <div className="notes-btn">
-                <button className="card-button-primary menu">
+                <button
+                    className="card-button-primary menu"
+                    onClick={toggleNav}
+                >
                     <i className="fa-solid fa-bars"></i>
                 </button>
                 <button className="card-button-secondary">
                     <h6>Save</h6>
                     <i className="fa-solid fa-floppy-disk"></i>
                 </button>
-                <button className="card-button-secondary">
+                <button
+                    className="card-button-secondary"
+                    onClick={toggleViewer}
+                >
                     {isViewer ? (
                         <>
                             <h6>Editor</h6>
