@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
 
     const { login, signup } = useAuth();
+    const router = useRouter();
 
     const cantAuth = !email.includes('@') || password.length < 6;
 
@@ -25,6 +27,7 @@ export default function Login() {
             } else {
                 await login(email, password);
             }
+            router.push('/notes');
         } catch (err) {
             console.log(err.message);
         } finally {
@@ -42,28 +45,38 @@ export default function Login() {
                     informaion and notes
                 </p>
                 <div className="full-line"></div>
-                <h6>Sign in</h6>
+                <h6>{isRegister ? 'Create an account' : 'Log in'}</h6>
                 <div>
                     <p>Email</p>
                     <input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         type="email"
                         placeholder="Enter your email address"
                     />
                 </div>
                 <div>
                     <p>Password</p>
-                    <input type="password" placeholder="********" />
+                    <input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password"
+                        placeholder="********"
+                    />
                 </div>
                 <button
                     onClick={handleAuthUser}
                     disabled={cantAuth || isAuthenticating}
                     className="submit-btn"
                 >
-                    <h6>Submit</h6>
+                    <h6>{isAuthenticating ? 'Submitting...' : 'Submit'}</h6>
                 </button>
                 <div className="secondary-btns-container">
-                    <button className="card-button-secondary">
-                        <small>Log in</small>
+                    <button
+                        onClick={() => setIsRegister(!isRegister)}
+                        className="card-button-secondary"
+                    >
+                        <small>{isRegister ? 'Log in' : ' Sign up'}</small>
                     </button>
                     <button className="card-button-secondary">
                         <small>Forgot password?</small>

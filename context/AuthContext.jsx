@@ -50,6 +50,7 @@ export default function AuthProvider({ children }) {
             try {
                 setCurrentUser(user);
                 if (!user) throw new Error('User not found');
+                console.log('Found user');
             } catch (err) {
                 console.log(err.message);
             } finally {

@@ -1,4 +1,10 @@
-export default function TopNav({ isViewer, toggleViewer, toggleNav }) {
+export default function TopNav({
+    isViewer,
+    toggleViewer,
+    toggleNav,
+    savingNote,
+    handleSaveNote,
+}) {
     return (
         <>
             <div className="notes-btn">
@@ -8,8 +14,12 @@ export default function TopNav({ isViewer, toggleViewer, toggleNav }) {
                 >
                     <i className="fa-solid fa-bars"></i>
                 </button>
-                <button className="card-button-secondary">
-                    <h6>Save</h6>
+                <button
+                    onClick={handleSaveNote}
+                    disabled={savingNote}
+                    className="card-button-secondary"
+                >
+                    <h6>{savingNote ? 'Saving...' : 'Save'}</h6>
                     <i className="fa-solid fa-floppy-disk"></i>
                 </button>
                 <button

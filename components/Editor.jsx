@@ -6,7 +6,7 @@ export default function Editor({ text, setText, ...props }) {
             <TopNav {...props} />
             <textarea
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={setText}
                 placeholder="Start typing..."
             ></textarea>
         </section>
