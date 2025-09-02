@@ -8,6 +8,16 @@ export default function Head() {
                 crossOrigin="anonymous"
                 referrerPolicy="no-referrer"
             />
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link
+                rel="preconnect"
+                href="https://fonts.gstatic.com"
+                crossOrigin=""
+            />
+            <link
+                href="https://fonts.googleapis.com/css2?family=Eczar:wght@400..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Press+Start+2P&display=swap"
+                rel="stylesheet"
+            />
         </head>
     );
 }

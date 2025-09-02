@@ -5,8 +5,9 @@ import MDX from '@/components/MDX';
 import SideNav from '@/components/SideNav';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/firebase';
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { useState } from 'react';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function NotesPage() {
     const [isViewer, setIsViewer] = useState(true);
@@ -18,6 +19,9 @@ export default function NotesPage() {
     });
     const [noteIds, setNoteIds] = useState([]);
     const [savingNote, setSavingNote] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const searchParams = useSearchParams();
 
     function toggleNav() {
         setShowNav(!showNav);
@@ -31,6 +35,8 @@ export default function NotesPage() {
         setNote({
             content: '',
         });
+        setIsViewer(false);
+        window.history.replaceState(null, '', '/notes');
     }
     function handleEditNote(e) {
         setNote({
@@ -60,7 +66,10 @@ export default function NotesPage() {
                     { merge: true }
                 );
             } else {
-                const newId = note.content.slice(0, 15) + '__' + Date.now();
+                const newId =
+                    note.content.replaceAll('#', '').slice(0, 15) +
+                    '__' +
+                    Date.now();
                 const notesRef = doc(
                     db,
                     'users',
@@ -72,7 +81,9 @@ export default function NotesPage() {
                     content: note.content,
                     createdAt: serverTimestamp(),
                 });
+                setNoteIds((prev) => [...prev, newId]);
                 setNote({ ...note, id: newId });
+                window.history.pushState(null, '', `?id=${newId}`);
             }
         } catch (err) {
             console.log(err.message);
@@ -80,6 +91,38 @@ export default function NotesPage() {
             setSavingNote(false);
         }
     }
+
+    useEffect(() => {
+        const value = searchParams.get('id');
+        if (!value || !currentUser) return;
+
+        async function fetchNote() {
+            if (isLoading) return;
+
+            try {
+                setIsLoading(true);
+                const notesRef = doc(
+                    db,
+                    'users',
+                    currentUser.uid,
+                    'notes',
+                    value
+                );
+                const snapshot = await getDoc(notesRef);
+                const docData = snapshot.exists()
+                    ? { id: snapshot.id, ...snapshot.data() }
+                    : null;
+                if (docData) {
+                    setNote({ ...docData });
+                }
+            } catch (err) {
+                console.log(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchNote();
+    }, [currentUser, searchParams]);
 
     if (isLoadingUser) {
         return <h5 className="text-gradient">Loading...</h5>;
@@ -92,6 +135,7 @@ export default function NotesPage() {
     return (
         <main id="notes">
             <SideNav
+                setIsViewer={setIsViewer}
                 handleCreateNote={handleCreateNote}
                 noteIds={noteIds}
                 setNoteIds={setNoteIds}

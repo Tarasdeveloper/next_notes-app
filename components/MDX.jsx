@@ -11,7 +11,9 @@ Hello world [click me](https://google.com) `;
         <section className="mdx-container">
             <TopNav {...props} />
             <article>
-                <Markdown>{text.trim()}</Markdown>
+                <Markdown>
+                    {text.trim() || 'Hop in the editor to create a new note'}
+                </Markdown>
             </article>
         </section>
     );

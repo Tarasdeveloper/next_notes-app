@@ -10,6 +10,7 @@ export default function SideNav({
     noteIds,
     setNoteIds,
     handleCreateNote,
+    setIsViewer,
 }) {
     // const notes = ['hello', 'world', 'test'];
 
@@ -82,7 +83,10 @@ export default function SideNav({
                         const date = new Date(parseInt(d)).toString();
                         return (
                             <button
-                                onClick={() => router.push(`/notes?id=${note}`)}
+                                onClick={() => {
+                                    router.push('/notes?id=' + note);
+                                    setIsViewer(true);
+                                }}
                                 className="card-button-secondary list-btn"
                                 key={idx}
                             >
